@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health & Diet Assessment</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: 0.3s ease-in-out;
+    }
+
+    h2 {
+      font-size: 26px;
+      font-weight: bold;
+      color: #ff5f6d;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      background: linear-gradient(90deg, #ff758c, #ff7eb3);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s ease-in-out;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #ff5f6d, #ff9999);
+      transform: scale(1.05);
+    }
+
+    #output {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .underweight { background: #ffdddd; color: #d70000; }
+    .normal { background: #d4edda; color: #008000; }
+    .overweight { background: #fff3cd; color: #d68a00; }
+    .obese { background: #f8d7da; color: #d80032; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🌿 Health & Diet Assessment 🍽️</h2>
+    <form id="healthForm">
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" required />
+
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="weight">Weight (kg):</label>
+      <input type="number" step="0.1" id="weight" name="weight" required />
+
+      <label for="height">Height (cm):</label>
+      <input type="number" step="0.1" id="height" name="height" required />
+
+      <label for="activity">Physical Activity Level:</label>
+      <select id="activity" name="activity" required>
+        <option value="low">Low</option>
+        <option value="moderate">Moderate</option>
+        <option value="high">High</option>
+      </select>
+
+      <label for="region">Regional Dietary Pattern:</label>
+      <select id="region" name="region" required>
+        <option value="north-india">North India</option>
+        <option value="south-india">South India</option>
+        <option value="east-india">East India</option>
+        <option value="west-india">West India</option>
+      </select>
+
+      <button type="submit">🚀 Get My Diet Plan</button>
+    </form>
+
+    <div id="output"></div>
+  </div>
+
+  <script>
+    document.getElementById('healthForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      
+      const age = document.getElementById('age').value;
+      const gender = document.getElementById('gender').value;
+      const weight = parseFloat(document.getElementById('weight').value);
+      const heightCm = parseFloat(document.getElementById('height').value);
+      const activity = document.getElementById('activity').value;
+      const region = document.getElementById('region').value;
+
+      if (age <= 0 || weight <= 0 || heightCm <= 0) {
+        alert("⚠️ Please enter valid positive values for age, weight, and height.");
+        return;
+      }
+
+      const heightM = heightCm / 100;
+      const bmi = weight / (heightM * heightM);
+
+      let bmiStatus = '';
+      if (bmi < 18.5) {
+        bmiStatus = 'Underweight';
+      } else if (bmi >= 18.5 && bmi <= 24.9) {
+        bmiStatus = 'Normal weight';
+      } else if (bmi >= 25 && bmi <= 29.9) {
+        bmiStatus = 'Overweight';
+      } else {
+        bmiStatus = 'Obese';
+      }
+
+      const dietAdvice = {
+        'underweight': "Increase calorie intake with nuts, dairy, and complex carbs.",
+        'normal': "Maintain a balanced diet rich in fiber and lean proteins.",
+        'overweight': "Reduce sugar intake and focus on fiber-rich foods like greens and oats.",
+        'obese': "Limit processed foods, focus on whole foods, and watch portion sizes."
+      };
+
+      const mealPlans = {
+        'north-india': "Dal & Rice, Paneer Roti, Curd | Steamed Vegetables | Hydration with Lassi",
+        'south-india': "Idli & Sambar | Coconut-based Curries | Millet-based Dosa",
+        'east-india': "Rice & Fish Curry | Steamed Veggies | Mustard-based Dishes",
+        'west-india': "Jowar Rotis | Sprouted Lentil Salads | Curd for Digestion"
+      };
+
+      const regionalDiet = {
+        'north-india': "Focus on legumes, dairy, wheat-based rotis.",
+        'south-india': "Include fermented foods and balance coconut consumption.",
+        'east-india': "Prioritize rice, fish, and mustard-based dishes.",
+        'west-india': "Balance spicy food with curd and whole grains like jowar."
+      };
+
+      const dietSuggestion = dietAdvice[bmiStatus.toLowerCase()];
+      const mealPlanSuggestion = mealPlans[region];
+      const regionalSuggestion = regionalDiet[region];
+
+      const outputDiv = document.getElementById('output');
+      outputDiv.innerHTML = `
+        <strong>🍽️ Diet Suggestion:</strong> ${dietSuggestion} <br/><br/>
+        <strong>🥗 Meal Plan:</strong> ${mealPlanSuggestion} <br/><br/>
+        <strong>🌎 Regional Diet Advice (${region.replace('-', ' ')}):</strong> ${regionalSuggestion}
+      `;
+      outputDiv.className = bmiStatus.toLowerCase();
+      outputDiv.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
